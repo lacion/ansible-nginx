@@ -1,0 +1,12 @@
+server {
+
+	listen 80 default_server;
+  listen [::]:80 default_server ipv6only=on;
+
+	root /opt/www/default/;
+	index index.html index.htm;
+
+	server_name localhost;
+
+  include     includes.d/thirdparty/pagespeed_vhost.conf;
+}
