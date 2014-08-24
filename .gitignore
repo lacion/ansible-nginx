@@ -3,3 +3,5 @@ tmp/*
 
 # ignore build/ folder in docs
 docs/build/*
+
+venv
