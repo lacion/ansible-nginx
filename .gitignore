@@ -1,0 +1,5 @@
+# ignore tmp/ for downloads
+tmp/*
+
+# ignore build/ folder in docs
+docs/build/*
