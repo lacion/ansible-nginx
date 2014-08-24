@@ -1,0 +1,10 @@
+[web]
+nginxweb.local
+
+[vagrant:children]
+web
+
+[vagrant:vars]
+# SSH Configuration
+ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+ansible_ssh_user=vagrant

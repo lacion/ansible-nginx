@@ -1,0 +1,95 @@
+---
+# tasks file for ansible-nginx
+
+- name: add apt repo for nginx with pagespeed
+  apt_repository: repo='ppa:sandyd/nginx-current-pagespeed'
+  register: apt_repo
+
+- name: apt-get update if we updated the apt-repo
+  apt: update_cache=True
+  when: apt_repo|changed
+
+- name: install nginx
+  action: apt name=nginx
+  notify: stop nginx
+
+- name: creating the dirs for nginx
+  file: dest={{item}} mode=0755 state=directory
+  with_items:
+  - /etc/nginx/ssl
+  - /etc/nginx/includes.d
+  - /etc/nginx/includes.d/limits
+  - /etc/nginx/includes.d/logs
+  - /etc/nginx/includes.d/maps
+  - /etc/nginx/includes.d/system
+  - /etc/nginx/includes.d/thirdparty
+
+- name: create pagespeed cache folder
+  file: dest=/var/ngx_pagespeed_cache recurse=yes mode=0755 state=directory owner=www-data group=www-data
+
+- name: default nginx site dir
+  file: dest=/opt/www recurse=yes mode=0755 state=directory owner=www-data group=www-data
+
+- name: default nginx site dir
+  file: dest=/opt/www/default recurse=yes mode=0755 state=directory owner=www-data group=www-data
+
+- name: write nginx config
+  template: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - { src: 'nginx.conf.j2', dest: '/etc/nginx/nginx.conf' }
+    - { src: 'includes.d/limits/hashes.conf.j2', dest: '/etc/nginx/includes.d/limits/hashes.conf' }
+    - { src: 'includes.d/limits/open_files_cache.conf.j2', dest: '/etc/nginx/includes.d/limits/open_files_cache.conf' }
+    - { src: 'includes.d/limits/timeouts.conf.j2', dest: '/etc/nginx/includes.d/limits/timeouts.conf' }
+    - { src: 'includes.d/logs/error.conf.j2', dest: '/etc/nginx/includes.d/logs/error.conf' }
+    - { src: 'includes.d/logs/formats.conf.j2', dest: '/etc/nginx/includes.d/logs/formats.conf' }
+    - { src: 'includes.d/maps/access_log_name.conf.j2', dest: '/etc/nginx/includes.d/maps/access_log_name.conf' }
+    - { src: 'includes.d/maps/bot_req.conf.j2', dest: '/etc/nginx/includes.d/maps/bot_req.conf' }
+    - { src: 'includes.d/maps/bot_ua.conf.j2', dest: '/etc/nginx/includes.d/maps/bot_ua.conf' }
+    - { src: 'includes.d/system/connections.conf.j2', dest: '/etc/nginx/includes.d/system/connections.conf' }
+    - { src: 'includes.d/system/http.conf.j2', dest: '/etc/nginx/includes.d/system/http.conf' }
+    - { src: 'includes.d/system/local.conf.j2', dest: '/etc/nginx/includes.d/system/local.conf' }
+    - { src: 'includes.d/system/os.conf.j2', dest: '/etc/nginx/includes.d/system/os.conf' }
+    - { src: 'includes.d/system/processes.conf.j2', dest: '/etc/nginx/includes.d/system/processes.conf' }
+    - { src: 'includes.d/thirdparty/pagespeed.conf.j2', dest: '/etc/nginx/includes.d/thirdparty/pagespeed.conf' }
+    - { src: 'includes.d/thirdparty/pagespeed_vhost.conf.j2', dest: '/etc/nginx/includes.d/thirdparty/pagespeed_vhost.conf' }
+
+  tags:
+   - configuration
+
+- name: set up default nginx site
+  template: src=nginx.default.j2 dest=/etc/nginx/sites-available/default
+  tags:
+   - configuration
+
+- name: remove default site
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: link default site
+  file: src=/etc/nginx/sites-available/default dest=/etc/nginx/sites-enabled/default.conf state=link force=yes
+
+
+- name: copy default site files
+  copy: src={{item.src}} dest={{item.dest}} mode=0644 owner=www-data group=www-data
+  with_items:
+  - { src: 'default/index.html', dest: '/opt/www/default/index.html' }
+  - { src: 'default/cover.css', dest: '/opt/www/default/cover.css' }
+  - { src: 'default/bootstrap.min.css', dest: '/opt/www/default/bootstrap.min.css' }
+
+- name: check our nginx config
+  command: /etc/init.d/nginx configtest
+  register: result
+  ignore_errors: True
+  tags:
+   - configuration
+
+- name: if config is NOT OK then notify
+  fail: msg="NGINX config is NOT OK, please fix it and re-run the playbook."
+  when: result|failed
+  tags:
+   - configuration
+
+- name: config is ok, starting nginx
+  service: name=nginx state=restarted
+  when: result.rc == 0
+  tags:
+   - configuration

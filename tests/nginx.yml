@@ -1,0 +1,6 @@
+---
+  - name: Deploy Web
+    hosts: local
+    remote_user: root
+    roles:
+      - ansible-nginx

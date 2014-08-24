@@ -1,0 +1,27 @@
+include includes.d/system/os.conf;
+include includes.d/system/processes.conf;
+
+events
+{
+    include     includes.d/system/connections.conf;
+}
+
+http
+{
+    include     mime.types;
+
+    include     includes.d/limits/hashes.conf;
+    include     includes.d/limits/open_files_cache.conf;
+    include     includes.d/limits/timeouts.conf;
+
+    include     includes.d/system/http.conf;
+
+    include     includes.d/logs/formats.conf;
+    include     includes.d/logs/error.conf;
+
+    include     includes.d/maps/*.conf;
+
+    include     includes.d/thirdparty/pagespeed.conf;
+
+    include     sites-enabled/*.conf;
+}
