@@ -16,5 +16,13 @@ Vagrant.configure("2") do |config|
       vb.customize ['modifyvm', :id, '--memory', 128]
       vb.customize ['modifyvm', :id, '--cpus', 1]
     end
+
+    c.vm.provision "ansible" do |ansible|
+        ansible.playbook = "nginx.yml"
+        ansible.groups = {
+         "web" => ["nginx-web"],
+        }
+    end
+
   end
 end

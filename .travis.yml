@@ -24,7 +24,7 @@ script:
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/hosts tests/$SITE --connection=local --sudo
+    ansible-playbook -i tests/hosts tests/$SITE --sudo
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)

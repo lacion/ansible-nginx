@@ -86,6 +86,9 @@
   tags:
    - configuration
 
+- debug: var=result
+- debug: var=config
+
 - name: config is ok, starting nginx
   service: name=nginx state=restarted
   when: config.changed and "'done' in result.stdout"
