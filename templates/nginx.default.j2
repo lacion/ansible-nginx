@@ -7,6 +7,7 @@ server {
 	index index.html index.htm;
 
 	server_name localhost;
-
+  {% if nginx_pagespeed %}
   include     includes.d/thirdparty/pagespeed_vhost.conf;
+  {% endif %}
 }
