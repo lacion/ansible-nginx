@@ -7,11 +7,12 @@ env:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y curl
+  - sudo apt-get install -y python-apt python-pycurl curl
 
 install:
   # Install Ansible.
   - pip install ansible
+  #- ansible-galaxy install <rolename> #if dependencies are needed
 
   # Add ansible.cfg to pick up roles path.
 
