@@ -80,14 +80,11 @@
   tags:
    - configuration
 
-- name: if config is NOT OK then notify
-  fail: msg="NGINX config is NOT OK, please fix it and re-run the playbook."
-  when: config.changed and "'fail' in result.stdout"
-  tags:
-   - configuration
-
-- debug: var=result
-- debug: var=config
+#- name: if config is NOT OK then notify
+#  fail: msg="NGINX config is NOT OK, please fix it and re-run the playbook."
+#  when: config.changed and "'fail' not in result.stdout"
+#  tags:
+#   - configuration
 
 - name: config is ok, starting nginx
   service: name=nginx state=restarted
