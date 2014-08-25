@@ -1,6 +1,9 @@
 Nginx
 =====
 
+.. image:: https://travis-ci.org/lacion/ansible-nginx.svg
+    :target: https://travis-ci.org/lacion/ansible-nginx
+
 This role installs and configures `Nginx`_ on a server.
 
 Requirements

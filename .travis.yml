@@ -3,7 +3,7 @@ language: python
 python: "2.7"
 
 env:
-  - SITE=test.yml
+  - SITE=nginx.yml
 
 before_install:
   - sudo apt-get update -qq
@@ -14,7 +14,6 @@ install:
   - pip install ansible
 
   # Add ansible.cfg to pick up roles path.
-  - "printf '[defaults]\nroles_path = ../' > ansible.cfg"
 
 script:
   # Check the role/playbook's syntax.
@@ -23,10 +22,11 @@ script:
   # Run the role/playbook with ansible-playbook.
   - "ansible-playbook -i tests/hosts tests/$SITE --connection=local --sudo"
 
+  # changed=0.*failed=0
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/hosts tests/$SITE --connection=local --sudo
-    | grep -q 'changed=0.*failed=0'
+    ansible-playbook -i tests/hosts tests/$SITE --sudo
+    | grep -q 'failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 

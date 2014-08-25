@@ -1,6 +1,7 @@
 ---
-  - name: Deploy Web
-    hosts: web
-    sudo: yes 
-    roles:
-      - ansible-nginx
+- name: Deploy Web
+  gather_facts: no
+  hosts: web
+  sudo: yes 
+  roles:
+    - ansible-nginx

@@ -27,13 +27,13 @@
 - name: create pagespeed cache folder
   file: dest=/var/ngx_pagespeed_cache recurse=yes mode=0755 state=directory owner=www-data group=www-data
 
-- name: default nginx site dir
+- name: default nginx site dir www
   file: dest=/opt/www recurse=yes mode=0755 state=directory owner=www-data group=www-data
 
-- name: default nginx site dir
+- name: default nginx site dir default
   file: dest=/opt/www/default recurse=yes mode=0755 state=directory owner=www-data group=www-data
 
-- name: write nginx config
+- name: write nginx config and default site
   template: src={{item.src}} dest={{item.dest}}
   with_items:
     - { src: 'nginx.conf.j2', dest: '/etc/nginx/nginx.conf' }
@@ -52,14 +52,11 @@
     - { src: 'includes.d/system/processes.conf.j2', dest: '/etc/nginx/includes.d/system/processes.conf' }
     - { src: 'includes.d/thirdparty/pagespeed.conf.j2', dest: '/etc/nginx/includes.d/thirdparty/pagespeed.conf' }
     - { src: 'includes.d/thirdparty/pagespeed_vhost.conf.j2', dest: '/etc/nginx/includes.d/thirdparty/pagespeed_vhost.conf' }
+    - { src: 'nginx.default.j2', dest: '/etc/nginx/sites-available/default' }
 
   tags:
    - configuration
-
-- name: set up default nginx site
-  template: src=nginx.default.j2 dest=/etc/nginx/sites-available/default
-  tags:
-   - configuration
+  register: config
 
 - name: remove default site
   file: path=/etc/nginx/sites-enabled/default state=absent
@@ -69,27 +66,28 @@
 
 
 - name: copy default site files
-  copy: src={{item.src}} dest={{item.dest}} mode=0644 owner=www-data group=www-data
+  copy: src={{item.src}} dest={{item.dest}} mode=0644 owner=www-data group=www-data force=no
   with_items:
   - { src: 'default/index.html', dest: '/opt/www/default/index.html' }
   - { src: 'default/cover.css', dest: '/opt/www/default/cover.css' }
   - { src: 'default/bootstrap.min.css', dest: '/opt/www/default/bootstrap.min.css' }
 
 - name: check our nginx config
-  command: /etc/init.d/nginx configtest
+  command: service nginx configtest
   register: result
   ignore_errors: True
+  when: config.changed
   tags:
    - configuration
 
-- name: if config is NOT OK then notify
-  fail: msg="NGINX config is NOT OK, please fix it and re-run the playbook."
-  when: result|failed
-  tags:
-   - configuration
+#- name: if config is NOT OK then notify
+#  fail: msg="NGINX config is NOT OK, please fix it and re-run the playbook."
+#  when: config.changed and "'fail' not in result.stdout"
+#  tags:
+#   - configuration
 
 - name: config is ok, starting nginx
   service: name=nginx state=restarted
-  when: result.rc == 0
+  when: config.changed and "'done' in result.stdout"
   tags:
    - configuration
