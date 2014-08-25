@@ -2,42 +2,54 @@
 pagespeed RewriteLevel PassThrough;
 
 # enable collapse whitespace filter
+{% if nginx_pagespeed_collapse_whitespace  %}
 pagespeed EnableFilters collapse_whitespace;
-
+{% endif %}
 # enable JavaScript library offload
+{% if nginx_pagespeed_canonicalize_javascript_libraries  %}
 pagespeed EnableFilters canonicalize_javascript_libraries;
-
+{% endif %}
 # combine multiple CSS files into one
+{% if nginx_pagespeed_combine_css  %}
 pagespeed EnableFilters combine_css;
-
+{% endif %}
 # combine multiple JavaScript files into one
+{% if nginx_pagespeed_combine_javascript %}
 pagespeed EnableFilters combine_javascript;
-
+{% endif %}
 # remove tags with default attributes
+{% if nginx_pagespeed_elide_attributes  %}
 pagespeed EnableFilters elide_attributes;
-
+{% endif %}
 # improve resource cacheability
+{% if nginx_pagespeed_extend_cache  %}
 pagespeed EnableFilters extend_cache;
-
+{% endif %}
 # flatten CSS files by replacing @import with the imported file
+{% if nginx_pagespeed_flatten_css_imports  %}
 pagespeed EnableFilters flatten_css_imports;
 pagespeed CssFlattenMaxBytes 5120;
-
+{% endif %}
 # defer the loading of images which are not visible to the client
+{% if nginx_pagespeed_lazyload_images  %}
 pagespeed EnableFilters lazyload_images;
-
+{% endif %}
 # enable JavaScript minification
+{% if nginx_pagespeed_rewrite_javascript  %}
 pagespeed EnableFilters rewrite_javascript;
-
+{% endif %}
 # enable image optimization
+{% if nginx_pagespeed_rewrite_images %}
 pagespeed EnableFilters rewrite_images;
-
+{% endif %}
 # pre-solve DNS lookup
+{% if nginx_pagespeed_insert_dns_prefetch  %}
 pagespeed EnableFilters insert_dns_prefetch;
-
+{% endif %}
 # rewrite CSS to load page-rendering CSS rules first.
+{% if nginx_pagespeed_prioritize_critical_css  %}
 pagespeed EnableFilters prioritize_critical_css;
-
+{% endif %}
 # Ensure requests for pagespeed optimized resources go to the pagespeed handler
 # and no extraneous headers get set.
 location ~ "\.pagespeed\.([a-z]\.)?[a-z]{2}\.[^.]{10}\.[^.]+" {

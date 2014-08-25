@@ -20,8 +20,9 @@ http
     include     includes.d/logs/error.conf;
 
     include     includes.d/maps/*.conf;
-
+    {% if nginx_pagespeed %}
     include     includes.d/thirdparty/pagespeed.conf;
+    {% endif %}
 
     include     sites-enabled/*.conf;
 }
