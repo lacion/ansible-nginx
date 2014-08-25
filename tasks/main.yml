@@ -11,7 +11,6 @@
 
 - name: install nginx
   action: apt name=nginx
-  notify: stop nginx
 
 - name: creating the dirs for nginx
   file: dest={{item}} mode=0755 state=directory
@@ -72,22 +71,6 @@
   - { src: 'default/cover.css', dest: '/opt/www/default/cover.css' }
   - { src: 'default/bootstrap.min.css', dest: '/opt/www/default/bootstrap.min.css' }
 
-- name: check our nginx config
-  command: service nginx configtest
-  register: result
-  ignore_errors: True
+- name: restart
+  include: restart.yml
   when: config.changed
-  tags:
-   - configuration
-
-#- name: if config is NOT OK then notify
-#  fail: msg="NGINX config is NOT OK, please fix it and re-run the playbook."
-#  when: config.changed and "'fail' not in result.stdout"
-#  tags:
-#   - configuration
-
-- name: config is ok, starting nginx
-  service: name=nginx state=restarted
-  when: config.changed and "'done' in result.stdout"
-  tags:
-   - configuration
