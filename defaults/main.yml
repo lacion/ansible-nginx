@@ -1,0 +1,73 @@
+---
+# defaults file for ansible-nginx
+
+#Nginx conf
+nginx_pagespeed: true #enables of disables global pagespeed
+
+#Nginx System OS settings
+nginx_user: www-data #user to run nginx
+nginx_worker_priority: -5 #ranges from -20 to 20 negative numbers being higher priority
+
+#Nginx System Processes settings
+nginx_worker_processes: auto #this will autodetect the value
+nginx_worker_rlimit_nofile: 16384 #Changes the limit on the maximum number of open files for worker processes.
+
+#Nginx System HTTP settings
+nginx_default_type: text/html
+nginx_server_tokens: 'off'
+nginx_msie_padding: 'off'
+nginx_max_ranges: 0
+nginx_charset: utf-8
+nginx_index: index.html index.htm index.php
+nginx_reset_timedout_connection: 'on'
+nginx_keepalive_disable: none
+nginx_sendfile: 'on'
+nginx_tcp_nopush: 'on'
+nginx_tcp_nodelay: 'off'
+nginx_keepalive_requests: 20
+
+#Nginx System Connections settings
+nginx_worker_connections: 8192
+
+#Nginx Limits Hashes settings
+nginx_variables_hash_max_size: 1024
+nginx_map_hash_max_size: 2048
+nginx_server_names_hash_max_size: 1024
+nginx_types_hash_max_size: 1024
+
+#Nginx Limits Open Files Cache settings
+nginx_open_file_cache: max=300
+nginx_open_file_cache_errors: 'on'
+
+#Nginx Limits Timeouts settings
+nginx_keepalive_timeout: 5
+nginx_client_header_timeout: 5
+nginx_client_body_timeout: 5
+nginx_send_timeout: 5
+nginx_fastcgi_connect_timeout: 5
+nginx_fastcgi_send_timeout: 5
+
+#Nginx Logs Error settings
+nginx_error_log: /var/log/nginx/default.error.log warn
+
+#Nginx Logs Formats settings
+nginx_log_format_name: main
+nginx_log_format_string: '$remote_addr $scheme://$host $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_time $upstream_addr $upstream_cache_status'
+nginx_log_subrequest: 'on'
+
+#Nginx Thirdparty pagespeed settings
+nginx_pagespeed_filecachepath: /var/ngx_pagespeed_cache
+
+#Nginx Thirdparty default pagespeed vhost settings
+nginx_pagespeed_collapse_whitespace: true
+nginx_pagespeed_canonicalize_javascript_libraries: true
+nginx_pagespeed_combine_css: true
+nginx_pagespeed_combine_javascript: true
+nginx_pagespeed_elide_attributes: true
+nginx_pagespeed_extend_cache: true
+nginx_pagespeed_flatten_css_imports: true
+nginx_pagespeed_lazyload_images: true
+nginx_pagespeed_rewrite_javascript: true
+nginx_pagespeed_rewrite_images: true
+nginx_pagespeed_insert_dns_prefetch: true
+nginx_pagespeed_prioritize_critical_css: true
