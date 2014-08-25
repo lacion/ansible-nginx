@@ -1,0 +1,34 @@
+---
+
+- hosts: local
+  tasks:
+    - name: look for nginx package
+      command: dpkg -s nginx
+      register: nginx_pkg
+
+    - name: check if nginx package is installes
+      assert:
+        that:
+          - "'Package: nginx' in nginx_pkg.stdout"
+          - "'Status: install ok installed' in nginx_pkg.stdout"
+
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - include_vars: "defaults/main.yml"
+    # Check that a page returns a status 200 and fail if the word wellcome is not in the page contents.
+    - name: check if nginx is running
+      uri: url=http://localhost return_content=yes
+      register: webserver
+
+    - name: check response status and for correct default page
+      assert: 
+        that: 
+          - webserver.status
+          - "'Welcome' in webserver.content"
+
+    - name: check for pagespeed header
+      assert: 
+        that: 
+          - webserver.x_page_speed is defined
+      when: nginx_pagespeed

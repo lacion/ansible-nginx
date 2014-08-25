@@ -1,3 +1,6 @@
+[local]
+localhost
+
 [web]
 nginxweb.local
 

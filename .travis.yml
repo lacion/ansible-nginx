@@ -31,5 +31,9 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
-  # Request a page via nginx, to make sure nginx is running and responds.
-  - "curl http://localhost/"
+  # run playbook test suit.
+  - >
+    ansible-playbook -i tests/hosts tests/test.yml --sudo
+    | grep -q 'unreachable=0*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
