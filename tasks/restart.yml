@@ -1,0 +1,19 @@
+---
+- name: check our nginx config
+  command: service nginx configtest
+  register: result
+  ignore_errors: True
+  tags:
+   - configuration
+
+- name: if config is NOT OK then notify
+  fail: msg="NGINX config is NOT OK, please fix it and re-run the playbook."
+  when: "'fail' in result.stdout"
+  tags:
+   - configuration
+
+- name: config is ok, starting nginx
+  service: name=nginx state=restarted
+  when: "'done' in result.stdout"
+  tags:
+   - configuration
