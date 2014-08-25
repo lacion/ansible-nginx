@@ -13,24 +13,24 @@ nginx_worker_processes: auto #this will autodetect the value
 nginx_worker_rlimit_nofile: 16384 #Changes the limit on the maximum number of open files for worker processes.
 
 #Nginx System HTTP settings
-nginx_default_type: text/html
-nginx_server_tokens: 'off'
-nginx_msie_padding: 'off'
-nginx_max_ranges: 0
-nginx_charset: utf-8
+nginx_default_type: text/html #Defines the default MIME type of a response
+nginx_server_tokens: 'off' #Enables or disables emitting nginx version in error messages and in the “Server” response header field.
+nginx_msie_padding: 'off' #Enables or disables adding comments to responses for MSIE clients with status greater than 400 to increase the response size to 512 bytes
+nginx_max_ranges: 0 #Limits the maximum allowed number of ranges in byte-range requests.
+nginx_charset: utf-8 
 nginx_index: index.html index.htm index.php
-nginx_reset_timedout_connection: 'on'
-nginx_keepalive_disable: none
+nginx_reset_timedout_connection: 'on' #Enables or disables resetting timed out connections http://nginx.org/en/docs/http/ngx_http_core_module.html#reset_timedout_connection
+nginx_keepalive_disable: none #Disables keep-alive connections with misbehaving browsers
 nginx_sendfile: 'on'
 nginx_tcp_nopush: 'on'
 nginx_tcp_nodelay: 'off'
 nginx_keepalive_requests: 20
 
 #Nginx System Connections settings
-nginx_worker_connections: 8192
+nginx_worker_connections: 8192 #Sets the maximum number of simultaneous connections that can be opened by a worker process.
 
 #Nginx Limits Hashes settings
-nginx_variables_hash_max_size: 1024
+nginx_variables_hash_max_size: 1024 #Sets the maximum size of the variables hash table
 nginx_map_hash_max_size: 2048
 nginx_server_names_hash_max_size: 1024
 nginx_types_hash_max_size: 1024
@@ -48,7 +48,8 @@ nginx_fastcgi_connect_timeout: 5
 nginx_fastcgi_send_timeout: 5
 
 #Nginx Logs Error settings
-nginx_error_log: /var/log/nginx/default.error.log warn
+nginx_error_log_file: /var/log/nginx/default.error.log
+nginx_error_log_level: warn
 
 #Nginx Logs Formats settings
 nginx_log_format_name: main
