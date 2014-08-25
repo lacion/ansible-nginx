@@ -34,7 +34,4 @@ script:
 
   # run playbook test suit.
   - >
-    ansible-playbook -i tests/hosts tests/test.yml
-    | grep -q 'unreachable=0*failed=0'
-    && (echo 'test: pass' && exit 0)
-    || (echo 'test: fail' && exit 1)
+    ansible-playbook -i tests/hosts tests/test.yml --sudo
