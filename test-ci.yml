@@ -16,7 +16,7 @@
 - hosts: 127.0.0.1
   connection: local
   tasks:
-    - include_vars: "../defaults/main.yml"
+    - include_vars: "defaults/main.yml"
     # Check that a page returns a status 200 and fail if the word wellcome is not in the page contents.
     - name: check if nginx is running
       uri: url=http://localhost return_content=yes
