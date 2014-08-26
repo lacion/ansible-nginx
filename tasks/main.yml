@@ -1,13 +1,16 @@
 ---
 # tasks file for ansible-nginx
 
+- include_vars: "defaults/main.yml"
+
 - name: add apt repo for nginx with pagespeed
   apt_repository: repo='ppa:sandyd/nginx-current-pagespeed'
   register: apt_repo
+  when: nginx_pagespeed
 
 - name: apt-get update if we updated the apt-repo
   apt: update_cache=True
-  when: apt_repo|changed
+  when: apt_repo|changed and pagespeed
 
 - name: install nginx
   action: apt name=nginx
@@ -25,6 +28,7 @@
 
 - name: create pagespeed cache folder
   file: dest=/var/ngx_pagespeed_cache recurse=yes mode=0755 state=directory owner=www-data group=www-data
+  when: nginx_pagespeed
 
 - name: default nginx site dir www
   file: dest=/opt/www recurse=yes mode=0755 state=directory owner=www-data group=www-data

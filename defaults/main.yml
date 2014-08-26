@@ -2,7 +2,7 @@
 # defaults file for ansible-nginx
 
 #Nginx conf
-nginx_pagespeed: true #enables of disables global pagespeed
+nginx_pagespeed: true #enables or disables global pagespeed
 
 #Nginx System OS settings
 nginx_user: www-data #user to run nginx
