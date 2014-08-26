@@ -3,14 +3,9 @@
 
 - include_vars: "main.yml"
 
-- name: add apt repo for nginx with pagespeed
-  apt_repository: repo='ppa:sandyd/nginx-current-pagespeed'
-  register: apt_repo
+- name: add pagespeed ppa
+  include: pagespeed.yml
   when: nginx_pagespeed
-
-- name: apt-get update if we updated the apt-repo
-  apt: update_cache=True
-  when: apt_repo|changed and pagespeed
 
 - name: install nginx
   action: apt name=nginx
